@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat Explorer</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="light-theme">
+  <!-- Custom Title Bar -->
+  <div class="title-bar">
+    <div class="title-bar-text">Chat Explorer</div>
+    <div class="title-bar-controls">
+      <button id="theme-toggle" aria-label="Toggle Theme">
+        <i class="fas fa-moon"></i>
+      </button>
+      <button id="minimize-btn" aria-label="Minimize">
+        <i class="fas fa-minus"></i>
+      </button>
+      <button id="maximize-btn" aria-label="Maximize">
+        <i class="fas fa-square"></i>
+      </button>
+      <button id="close-btn" aria-label="Close">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="container">
+    <!-- File Import Area -->
+    <div class="file-import-area" id="fileImportArea">
+      <div class="file-import-content">
+        <i class="fas fa-file-import file-import-icon"></i>
+        <h2>Import Chat Log</h2>
+        <p>Drag and drop a JSON file here or click to browse</p>
+        <button id="browseBtn" class="browse-btn">Browse Files</button>
+      </div>
+    </div>
+
+    <!-- File Information Bar (Hidden initially) -->
+    <div class="file-info-bar" id="fileInfoBar">
+      <div class="file-info">
+        <h3 id="fileName">No file loaded</h3>
+        <p>
+          <span id="messageCount">0</span> messages | 
+          <span id="fileSize">0 KB</span>
+        </p>
+      </div>
+      <button id="switchFileBtn" class="switch-file-btn">
+        <i class="fas fa-exchange-alt"></i> Switch File
+      </button>
+    </div>
+
+    <!-- Search Area -->
+    <div class="search-area" id="searchArea">
+      <div class="search-input-container">
+        <input type="text" id="searchInput" placeholder="Search for keywords or phrases...">
+        <button id="searchBtn" class="search-btn">
+          <i class="fas fa-search"></i>
+        </button>
+        <button id="clearBtn" class="clear-btn">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="search-suggestions" id="searchSuggestions"></div>
+    </div>
+
+    <!-- View Controls -->
+    <div class="view-controls" id="viewControls">
+      <div class="view-switcher">
+        <button id="cardViewBtn" class="view-btn active">
+          <i class="fas fa-th-large"></i> Card View
+        </button>
+        <button id="listViewBtn" class="view-btn">
+          <i class="fas fa-list"></i> List View
+        </button>
+      </div>
+      <div class="results-stats" id="resultsStats"></div>
+    </div>
+
+    <!-- Results Area -->
+    <div class="results-area" id="resultsArea">
+      <div class="empty-state" id="emptyState">
+        <i class="fas fa-search empty-state-icon"></i>
+        <p>Load a chat file and search for keywords to see results here</p>
+      </div>
+      <div class="results-container" id="resultsContainer"></div>
+    </div>
+
+    <!-- Status Indicator -->
+    <div class="status-indicator" id="statusIndicator">
+      <div class="status-spinner">
+        <i class="fas fa-spinner fa-spin"></i>
+      </div>
+      <span id="statusText">Ready</span>
+    </div>
+  </div>
+
+  <script type="module" src="renderer.js"></script>
+</body>
+</html>

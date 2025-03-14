@@ -8,7 +8,7 @@
 
 Chat Explorer is a desktop application built with Electron that allows you to search and browse your chat history. It's designed for Telegram chat exports and other JSON chat logs.
 
-<img src="readmeImg/electron_WsOK9tCgg7.png" alt="Chat Explorer Interface" width="700" style="max-width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);" />
+<img src="readmeImg\Chat_Explorer.png" alt="Chat Explorer Interface" width="700" style="max-width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);" />
 
 ## Features
 
@@ -92,7 +92,7 @@ Chat Explorer是一款桌面应用程序，基于Electron构建，可让您搜�
 3. 选择JSON格式
 4. 下载文件
 
-<img src="readmeImg/Chat_Explorer.png" alt="Telegram导出设置" width="500" style="max-width: 100%; border-radius: 4px; border: 1px solid #ddd;" />
+<img src="readmeImg/Telegram_OMp5niOU6i.png" alt="Telegram导出设置" width="500" style="max-width: 100%; border-radius: 4px; border: 1px solid #ddd;" />
 
 ## 使用入门
 

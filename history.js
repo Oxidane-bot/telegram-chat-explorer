@@ -1,9 +1,11 @@
 import * as state from './state.js';
 import { loadFile } from './fileHandler.js';
 import { showStatus } from './utils.js';
-import { fileImportArea } from './dom-elements.js';
+import { fileImportArea, addHistoryStyles } from './dom-elements.js';
 
-// Update the updateHistoryList function in history.js
+/**
+ * Updates the history list UI with current file history
+ */
 export function updateHistoryList() {
     const historyList = document.getElementById('historyList');
     if (!historyList) return;
@@ -72,35 +74,61 @@ export function updateHistoryList() {
     });
   }
   
-  // Create a simple, directly-constructed history panel
-  export function createHistoryPanel() {
-    const historyPanel = document.createElement('div');
-    historyPanel.className = 'history-panel';
-    historyPanel.id = 'historyPanel';
-    
-    historyPanel.innerHTML = `
-      <div class="history-header">
-        <h3>Recent Files</h3>
-        <button id="clearHistoryBtn" class="clear-history-btn" title="Clear History">
-          <i class="fas fa-trash-alt"></i>
-        </button>
-      </div>
-      <div class="history-list" id="historyList"></div>
-    `;
-    
-    // Add event listener for clearing history
-    const clearHistoryBtn = historyPanel.querySelector('#clearHistoryBtn');
-    clearHistoryBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      if (confirm('Are you sure you want to clear your file history?')) {
-        state.clearFileHistory();
-        updateHistoryList();
-      }
-    });
-    
-    return historyPanel;
-  }
-// Load a file from the history
+/**
+ * Creates a history panel DOM element
+ * @returns {HTMLElement} The history panel element
+ */
+export function createHistoryPanel() {
+  const historyPanel = document.createElement('div');
+  historyPanel.className = 'history-panel';
+  historyPanel.id = 'historyPanel';
+  
+  historyPanel.innerHTML = `
+    <div class="history-header">
+      <h3>Recent Files</h3>
+      <button id="clearHistoryBtn" class="clear-history-btn" title="Clear History">
+        <i class="fas fa-trash-alt"></i>
+      </button>
+    </div>
+    <div class="history-list" id="historyList"></div>
+  `;
+  
+  // Add event listener for clearing history
+  const clearHistoryBtn = historyPanel.querySelector('#clearHistoryBtn');
+  clearHistoryBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (confirm('Are you sure you want to clear your file history?')) {
+      state.clearFileHistory();
+      updateHistoryList();
+    }
+  });
+  
+  return historyPanel;
+}
+
+/**
+ * Initializes the file history components
+ * This is the main entry point for setting up history functionality
+ */
+export function initializeHistory() {
+  // Initialize history in the state module
+  state.initFileHistory();
+  
+  // Add history styles to the document
+  addHistoryStyles();
+  
+  // Create and add the history panel to the fileImportArea
+  const historyPanel = createHistoryPanel();
+  fileImportArea.appendChild(historyPanel);
+  
+  // Update the history list
+  updateHistoryList();
+}
+
+/**
+ * Loads a file from the history
+ * @param {string} filePath - Path to the file to load
+ */
 function loadFileFromHistory(filePath) {
     // Find the history item element
     const historyItem = document.querySelector(`.history-item[data-path="${filePath}"]`);
@@ -151,7 +179,11 @@ function loadFileFromHistory(filePath) {
       });
   }
 
-// Format a timestamp to a user-friendly date
+/**
+ * Format a timestamp to a user-friendly date
+ * @param {string} isoString - ISO date string to format
+ * @returns {string} Formatted date string
+ */
 function formatLastOpened(isoString) {
   try {
     const date = new Date(isoString);
@@ -181,7 +213,11 @@ function formatLastOpened(isoString) {
   }
 }
 
-// Format file size (copied from the window.api utility)
+/**
+ * Format file size
+ * @param {number} bytes - File size in bytes
+ * @returns {string} Formatted file size
+ */
 function formatFileSize(bytes) {
   if (typeof bytes !== 'number' || isNaN(bytes)) return '';
   

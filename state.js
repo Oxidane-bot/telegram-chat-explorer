@@ -1,4 +1,5 @@
 // Application state management module
+import { debugLog } from './debug.js';
 
 // State variables
 let chatData = null;
@@ -14,14 +15,6 @@ let fileHistory = [];
 
 // Maximum number of files to keep in history
 const MAX_HISTORY_ITEMS = 10;
-
-// Debug logger
-export function debugLog(...args) {
-  const isDebugMode = localStorage.getItem('debugMode') === 'true';
-  if (isDebugMode) {
-    console.log('[DEBUG]', ...args);
-  }
-}
 
 // Chat data getters and setters
 export function setChatData(data) {

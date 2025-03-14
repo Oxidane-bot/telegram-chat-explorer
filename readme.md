@@ -6,18 +6,18 @@
 
 ## Overview
 
-Chat Explorer is a desktop application built with Electron that allows you to easily search and browse your chat history. It's particularly designed for Telegram chat exports, enabling keyword search, conversation context viewing, and more.
+Chat Explorer is a desktop application built with Electron that allows you to search and browse your chat history. It's designed for Telegram chat exports and other JSON chat logs.
 
 <img src="readmeImg/electron_WsOK9tCgg7.png" alt="Chat Explorer Interface" width="700" style="max-width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);" />
 
 ## Features
 
-- **Import JSON Chat Logs**: Load JSON files exported from Telegram
-- **Powerful Search**: Find messages using keywords and exact phrases with quotation marks
-- **Dual View Modes**: Switch between card and list views
-- **Context Viewing**: See the surrounding conversation for any message
-- **Dark/Light Theme**: Choose your preferred visual mode
-- **Recent Files**: Quick access to previously loaded chats
+- **JSON Chat Import**: Drag & drop or browse to load chat files
+- **Advanced Search**: Find messages using keywords and exact phrases with quotation marks
+- **Multiple Views**: Switch between card and list views
+- **Conversation Context**: View messages before and after search results
+- **Theme Options**: Multiple themes and color options available
+- **Recent Files**: Quick access to previously opened chats
 - **Copy to Clipboard**: Easy sharing of message content
 
 ## How to Export Telegram Chats
@@ -35,7 +35,6 @@ Chat Explorer is a desktop application built with Electron that allows you to ea
 2. Launch the application
 3. Import a JSON file by dragging it or using "Browse Files"
 4. Use the search bar to find messages
-5. Toggle between views using the buttons at the top
 
 ## For Developers
 
@@ -72,18 +71,18 @@ If you want to run the application from source:
 
 ## 概述
 
-Chat Explorer是一款使用Electron构建的桌面应用程序，可让您轻松搜索和浏览聊天历史记录。它专为Telegram聊天导出设计，支持关键词搜索、查看对话上下文等功能。
+Chat Explorer是一款桌面应用程序，基于Electron构建，可让您搜索和浏览聊天历史记录。它适用于Telegram聊天导出和其他JSON聊天日志。
 
 <img src="readmeImg/electron_WsOK9tCgg7.png" alt="聊天浏览器界面" width="700" style="max-width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);" />
 
 ## 功能特点
 
-- **导入JSON聊天记录**：加载从Telegram导出的JSON文件
-- **强大的搜索功能**：使用关键词和引号精确匹配短语
-- **双视图模式**：在卡片视图和列表视图之间切换
-- **上下文查看**：查看任何消息周围的对话
-- **深色/浅色主题**：选择您喜欢的视觉模式
-- **最近文件**：快速访问先前加载的聊天记录
+- **JSON聊天导入**：拖放或浏览加载聊天文件
+- **高级搜索**：使用关键词和引号内精确短语查找消息
+- **多种视图**：在卡片视图和列表视图之间切换
+- **对话上下文**：查看搜索结果前后的消息
+- **主题选项**：提供多种主题和颜色选择
+- **最近文件**：快速访问先前打开的聊天记录
 - **复制到剪贴板**：轻松分享消息内容
 
 ## 如何导出Telegram聊天记录
@@ -93,7 +92,7 @@ Chat Explorer是一款使用Electron构建的桌面应用程序，可让您轻�
 3. 选择JSON格式
 4. 下载文件
 
-<img src="readmeImg/Telegram_OMp5niOU6i.png" alt="Telegram导出设置" width="500" style="max-width: 100%; border-radius: 4px; border: 1px solid #ddd;" />
+<img src="readmeImg/Chat_Explorer.png" alt="Telegram导出设置" width="500" style="max-width: 100%; border-radius: 4px; border: 1px solid #ddd;" />
 
 ## 使用入门
 
@@ -101,7 +100,6 @@ Chat Explorer是一款使用Electron构建的桌面应用程序，可让您轻�
 2. 启动应用程序
 3. 通过拖放或使用"浏览文件"导入JSON文件
 4. 使用搜索栏查找消息
-5. 使用顶部按钮切换视图模式
 
 ## 开发者指南
 
@@ -125,7 +123,6 @@ Chat Explorer是一款使用Electron构建的桌面应用程序，可让您轻�
 
 4. 为您的平台构建
    ```
-   npm run build      # 为所有平台构建
    npm run build:mac  # 仅macOS
    npm run build:win  # 仅Windows
    ```

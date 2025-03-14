@@ -18,8 +18,27 @@ contextBridge.exposeInMainWorld('api', {
     return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
   },
   
-  formatDate: (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleString();
+  formatDate: (dateValue) => {
+    try {
+      // Handle empty or null values
+      if (!dateValue) {
+        return "Unknown date";
+      }
+      
+      // Handle Unix timestamps (numbers) or ISO strings
+      const date = typeof dateValue === 'number' 
+        ? new Date(dateValue * 1000)  // Unix timestamp (seconds)
+        : new Date(dateValue);        // Date string
+      
+      // Check if date is valid before formatting
+      if (isNaN(date.getTime())) {
+        return "Unknown date";
+      }
+      
+      return date.toLocaleString();
+    } catch (error) {
+      console.error("Date formatting error:", error);
+      return "Unknown date";
+    }
   }
 });

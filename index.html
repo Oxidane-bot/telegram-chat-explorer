@@ -4,16 +4,46 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chat Explorer</title>
-  <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- 内联关键CSS -->
+  <style>
+    /* 仅包含首屏必要的样式 */
+    body { font-family: sans-serif; margin: 0; overflow: hidden; }
+    .title-bar { height: 42px; display: flex; align-items: center; justify-content: space-between; }
+    .container { padding: 16px; display: flex; flex-direction: column; height: calc(100vh - 42px); }
+    .file-import-area { text-align: center; padding: 20px; }
+    /* 添加一个加载指示器 */
+    .initial-loading { position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+                      display: flex; justify-content: center; align-items: center;
+                      background: rgba(0,0,0,0.75); z-index: 9999; color: white; }
+  </style>
+  
+  <!-- 延迟加载完整CSS -->
+  <link rel="stylesheet" href="styles.css" media="print" onload="this.media='all'">
+  
+  <!-- 预加载必要资源 -->
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" 
+        media="print" onload="this.media='all'">
 </head>
 <body class="light-theme">
+  <!-- 初始加载指示器 -->
+  <div class="initial-loading" id="initialLoading">
+    <div>
+      <div style="font-size: 40px; text-align: center;"><i class="fas fa-spinner fa-spin"></i></div>
+      <div style="margin-top: 20px;">Loading Chat Explorer...</div>
+    </div>
+  </div>
+
   <!-- Custom Title Bar -->
   <div class="title-bar">
     <div class="title-bar-text">Chat Explorer</div>
     <div class="title-bar-controls">
       <button id="theme-toggle" aria-label="Toggle Theme">
         <i class="fas fa-moon"></i>
+      </button>
+      <button id="theme-selector-btn" class="theme-selector-btn" aria-label="Theme Colors">
+        <i class="fas fa-palette"></i>
       </button>
       <button id="minimize-btn" aria-label="Minimize">
         <i class="fas fa-minus"></i>
@@ -24,6 +54,69 @@
       <button id="close-btn" aria-label="Close">
         <i class="fas fa-times"></i>
       </button>
+    </div>
+  </div>
+
+  <!-- Theme Selector Panel -->
+  <div id="theme-selector" class="theme-selector">
+    <div class="theme-selector-header">
+      <div class="theme-selector-title">Theme Settings</div>
+      <button id="theme-selector-close" class="theme-selector-close">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="theme-selector-options">
+      <!-- Light/Dark Mode -->
+      <div class="selector-section">
+        <div class="selector-label">Mode</div>
+        <div class="mode-options">
+          <div class="mode-option" id="light-mode" data-mode="light">Light</div>
+          <div class="mode-option active" id="dark-mode" data-mode="dark">Dark</div>
+        </div>
+      </div>
+      
+      <!-- Accent Colors -->
+      <div class="selector-section">
+        <div class="selector-label">Accent Color</div>
+        <div class="theme-options">
+          <div class="color-option color-blue active" data-theme="default"></div>
+          <div class="color-option color-purple" data-theme="purple"></div>
+          <div class="color-option color-green" data-theme="green"></div>
+          <div class="color-option color-amber" data-theme="amber"></div>
+          <div class="color-option color-pink" data-theme="pink"></div>
+        </div>
+      </div>
+      
+      <!-- Design Theme -->
+      <div class="selector-section">
+        <div class="selector-label">Design Style</div>
+        <div class="design-options">
+          <div class="design-option" data-design="modern">
+            <i class="fas fa-square"></i>
+            <span>Modern</span>
+          </div>
+          <div class="design-option" data-design="retro">
+            <i class="fas fa-terminal"></i>
+            <span>Retro</span>
+          </div>
+          <div class="design-option" data-design="synthwave">
+            <i class="fas fa-music"></i>
+            <span>Synthwave</span>
+          </div>
+          <div class="design-option" data-design="cyberpunk">
+            <i class="fas fa-robot"></i>
+            <span>Cyberpunk</span>
+          </div>
+          <div class="design-option" data-design="minimal">
+            <i class="fas fa-minus"></i>
+            <span>Minimal</span>
+          </div>
+          <div class="design-option" data-design="space">
+            <i class="fas fa-star"></i>
+            <span>Space</span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -91,9 +184,7 @@
 
     <!-- Status Indicator -->
     <div class="status-indicator" id="statusIndicator">
-      <div class="status-spinner">
-        <i class="fas fa-spinner fa-spin"></i>
-      </div>
+      <div class="status-spinner"></div>
       <span id="statusText">Ready</span>
     </div>
   </div>

@@ -1,9 +1,21 @@
 import { statusText, statusIndicator } from './dom-elements.js';
 import * as state from './state.js';
 
+/**
+ * Debug logger - Only logs if debug mode is enabled in localStorage
+ * @param {...any} args - Arguments to log
+ */
+export function debugLog(...args) {
+  const isDebugMode = localStorage.getItem('debugMode') === 'true';
+  if (isDebugMode) {
+    console.log('[DEBUG]', ...args);
+  }
+}
+
 // Show status message
 export function showStatus(message, type = 'idle') {
   statusText.textContent = message;
+  statusText.className = 'status-text';
   
   // Reset all status classes
   statusIndicator.classList.remove('loading', 'success', 'error');
@@ -36,15 +48,15 @@ export function showContextView(selectedMessage) {
   const chatData = state.getChatData();
   const currentSearchTerms = state.getCurrentSearchTerms();
   
-  if (!chatData || !chatData.messages) return;
+  if (!chatData?.messages) return;
   
   // Find the index of the selected message
   const messageIndex = chatData.messages.findIndex(msg => msg.id === selectedMessage.id);
   if (messageIndex === -1) return;
   
-  // Get messages before and after (3 in each direction)
-  const startIndex = Math.max(0, messageIndex - 3);
-  const endIndex = Math.min(chatData.messages.length - 1, messageIndex + 3);
+  // Get messages before and after (5 in each direction instead of 3)
+  const startIndex = Math.max(0, messageIndex - 5);
+  const endIndex = Math.min(chatData.messages.length - 1, messageIndex + 5);
   const contextMessages = chatData.messages.slice(startIndex, endIndex + 1);
   
   // Create the context view
@@ -66,38 +78,64 @@ export function showContextView(selectedMessage) {
   const contextContentElement = document.createElement('div');
   contextContentElement.className = 'context-content';
   
+  // Add message thread information if available
+  if (chatData.name) {
+    const threadInfoElement = document.createElement('div');
+    threadInfoElement.className = 'context-thread-info';
+    threadInfoElement.innerHTML = `<div class="thread-name">${escapeHtml(chatData.name)}</div>`;
+    if (chatData.type) {
+      threadInfoElement.innerHTML += `<div class="thread-type">${chatData.type}</div>`;
+    }
+    contextContentElement.appendChild(threadInfoElement);
+  }
+  
+  // Track the current date to create date separators
+  let currentDate = '';
+  
   // Add messages to the context content
   contextMessages.forEach(message => {
-    const messageElement = document.createElement('div');
-    messageElement.className = 'context-message';
-    if (message.id === selectedMessage.id) {
-      messageElement.classList.add('highlight');
+    const messageDate = window.api.formatDate(message.date).split(' ')[0]; // Get just the date part
+    
+    // Add a date separator if the date changes
+    if (messageDate !== currentDate) {
+      currentDate = messageDate;
+      const dateSeparator = document.createElement('div');
+      dateSeparator.className = 'context-date-separator';
+      dateSeparator.textContent = messageDate;
+      contextContentElement.appendChild(dateSeparator);
     }
+    
+    const messageElement = document.createElement('div');
+    messageElement.className = `context-message${message.id === selectedMessage.id ? ' highlight' : ''}`;
     
     // For context view, we need to safely process the text content
     // and apply highlighting if search terms are active
     const messageText = message.text || '';
-    let formattedContent = '';
     
     // If we have active search terms, apply highlighting
-    if (currentSearchTerms) {
-      formattedContent = highlightText(messageText, currentSearchTerms);
-    } else {
-      // Just escape HTML if no search terms
-      formattedContent = messageText.replace(/&/g, '&amp;')
-                                    .replace(/</g, '&lt;')
-                                    .replace(/>/g, '&gt;')
-                                    .replace(/"/g, '&quot;')
-                                    .replace(/'/g, '&#039;');
-    }
+    const formattedContent = currentSearchTerms
+      ? highlightText(messageText, currentSearchTerms)
+      : escapeHtml(messageText);
+    
+    // Format the time part
+    const fullDateTime = window.api.formatDate(message.date);
+    const timeStr = fullDateTime.split(' ')[1] || fullDateTime;  // Extract time portion or use full string if splitting fails
     
     messageElement.innerHTML = `
       <div class="sender-info">
         <span class="sender-name">${message.from || 'Unknown'}</span>
-        <span class="message-date">${window.api.formatDate(message.date)}</span>
+        <span class="message-date">${timeStr}</span>
       </div>
       <div class="message-content">${formattedContent}</div>
     `;
+    
+    // Add message media if available
+    if (message.media && message.media.length > 0) {
+      const mediaContainer = document.createElement('div');
+      mediaContainer.className = 'message-media';
+      mediaContainer.innerHTML = `<div class="media-indicator"><i class="fas fa-paperclip"></i> ${message.media.length} media attachment${message.media.length > 1 ? 's' : ''}</div>`;
+      messageElement.appendChild(mediaContainer);
+    }
     
     contextContentElement.appendChild(messageElement);
   });
@@ -109,29 +147,61 @@ export function showContextView(selectedMessage) {
   // Add to the DOM
   document.body.appendChild(contextViewElement);
   
-  // Add event listeners
-  const closeBtn = contextViewElement.querySelector('.context-close-btn');
-  closeBtn.addEventListener('click', () => {
+  // Function to close the context view
+  const closeContextView = () => {
+    // Remove keyboard event listener when context view is closed
+    document.removeEventListener('keydown', handleEscKey);
+    
+    // Remove highlight from any focused elements
+    if (document.activeElement) {
+      document.activeElement.blur();
+    }
+    
     contextViewElement.classList.remove('open');
     setTimeout(() => {
       document.body.removeChild(contextViewElement);
     }, 300);
-  });
+  };
+  
+  // Handle ESC key press
+  const handleEscKey = (e) => {
+    if (e.key === 'Escape') {
+      closeContextView();
+    }
+  };
+  
+  // Add event listeners
+  const closeBtn = contextViewElement.querySelector('.context-close-btn');
+  closeBtn.addEventListener('click', closeContextView);
   
   // Click outside to close
   contextViewElement.addEventListener('click', (e) => {
     if (e.target === contextViewElement) {
-      contextViewElement.classList.remove('open');
-      setTimeout(() => {
-        document.body.removeChild(contextViewElement);
-      }, 300);
+      closeContextView();
     }
   });
+  
+  // Add keyboard event listener for ESC key
+  document.addEventListener('keydown', handleEscKey);
   
   // Show the context view
   setTimeout(() => {
     contextViewElement.classList.add('open');
   }, 10);
+}
+
+/**
+ * Escape HTML special characters to prevent XSS
+ * @param {string} text - Text to escape
+ * @returns {string} - Escaped HTML
+ */
+function escapeHtml(text) {
+  return String(text || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
 }
 
 // Improved highlighting function

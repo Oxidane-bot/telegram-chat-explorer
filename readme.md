@@ -73,7 +73,7 @@ If you want to run the application from source:
 
 Chat Explorer是一款桌面应用程序，基于Electron构建，可让您搜索和浏览聊天历史记录。它适用于Telegram聊天导出和其他JSON聊天日志。
 
-<img src="readmeImg/electron_WsOK9tCgg7.png" alt="聊天浏览器界面" width="700" style="max-width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);" />
+<img src="readmeImg\Chat_Explorer.png" alt="聊天浏览器界面" width="700" style="max-width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);" />
 
 ## 功能特点
 

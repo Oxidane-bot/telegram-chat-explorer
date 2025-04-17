@@ -32,10 +32,12 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
         
-      - name: Install xvfb and dependencies for Electron
+      - name: Install xvfb and Electron dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y xvfb libgtk-3-0 libgbm1 libasound2 libx11-xcb1 libxcb-dri3-0 libxcomposite1 libxcursor1 libxdamage1 libxfixes3 libxi6 libxrandr2 libxrender1 libxtst6
+          sudo apt-get install -y xvfb libgtk-3-0 libgbm1 libatk1.0-0 libatk-bridge2.0-0 \
+          libcups2 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 \
+          libgbm-dev libpango-1.0-0 libasound2-dev
       
       - name: Run Playwright tests
         env:

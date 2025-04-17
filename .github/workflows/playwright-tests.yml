@@ -19,6 +19,13 @@ jobs:
         with:
           node-version: 18
           cache: 'npm'
+      
+      - name: Setup display
+        run: |
+          # 设置虚拟显示器
+          export DISPLAY=:99
+          sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 &
+          echo "已启动虚拟显示"
           
       - name: Install dependencies
         run: npm ci
@@ -32,18 +39,43 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
         
-      - name: Install xvfb and Electron dependencies
+      - name: Install Electron dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y xvfb libgtk-3-0 libgbm1 libatk1.0-0 libatk-bridge2.0-0 \
-          libcups2 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 \
-          libgbm-dev libpango-1.0-0 libasound2-dev
+          sudo apt-get install -y \
+            libgtk-3-0 \
+            libgbm-dev \
+            libatspi2.0-0 \
+            libatk1.0-0 \
+            libasound2-dev \
+            libsecret-1-dev \
+            libdrm-dev \
+            libgconf-2-4 \
+            libnss3-dev
       
-      - name: Run Playwright tests
+      - name: Verify Electron
+        run: |
+          echo "验证Electron环境..."
+          npx electron --version
+          echo "Electron版本检查完成"
+      
+      - name: Run tests with verbose output
         env:
           NODE_ENV: test
           CI: true
-        run: xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24" npm run test:ci
+          DEBUG: pw:api,pw:browser*,electron*
+          ELECTRON_ENABLE_LOGGING: true
+        run: npm run test:ci
+      
+      - name: List test directories
+        if: always()
+        run: |
+          echo "测试目录内容:"
+          ls -la tests/
+          echo "测试数据目录内容:"
+          ls -la tests/mock-data/ || echo "mock-data目录不存在"
+          echo "测试报告目录内容:"
+          ls -la playwright-report/ || echo "playwright-report目录不存在"
         
       - name: Upload test results
         if: always()

@@ -204,3 +204,116 @@ module.exports = {
     `;
   }
 }; 
+
+// 测试环境的预加载脚本
+const fs = require('fs');
+const path = require('path');
+
+// CI环境检测
+const isCI = process.env.CI === 'true';
+console.log('测试预加载 - CI环境:', isCI);
+
+// 为测试环境设置模拟数据和工具函数
+class TestEnvironment {
+  constructor() {
+    this.mockDataPath = path.join(__dirname, 'mock-data');
+    this.initialized = false;
+  }
+
+  async init() {
+    if (this.initialized) return;
+    
+    console.log('初始化测试环境...');
+    
+    // 确保mock目录存在
+    this.ensureDirectory(this.mockDataPath);
+    
+    // 创建测试用的聊天数据文件
+    await this.createMockChatFile();
+    
+    this.initialized = true;
+    console.log('测试环境初始化完成');
+  }
+  
+  ensureDirectory(dir) {
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+      console.log(`创建目录: ${dir}`);
+    }
+  }
+  
+  async createMockChatFile() {
+    const mockChatPath = path.join(this.mockDataPath, 'simple-chat.json');
+    
+    // 简单的mock数据
+    const mockData = {
+      name: "Test Chat",
+      type: "personal_chat",
+      messages: [
+        { 
+          id: 1, 
+          type: "message", 
+          date: "2023-01-01T10:00:00Z",
+          from: "Test User",
+          text: "Hello world" 
+        },
+        { 
+          id: 2, 
+          type: "message", 
+          date: "2023-01-01T10:01:00Z",
+          from: "Another User",
+          text: "Test message" 
+        }
+      ]
+    };
+    
+    try {
+      fs.writeFileSync(mockChatPath, JSON.stringify(mockData, null, 2));
+      console.log(`创建测试聊天数据: ${mockChatPath}`);
+    } catch (err) {
+      console.error('创建测试聊天数据失败:', err);
+    }
+  }
+  
+  // CI环境特殊处理
+  setupCIEnvironment() {
+    if (!isCI) return;
+    
+    console.log('为CI环境设置特殊配置...');
+    
+    // 覆盖Electron设置，优化CI运行
+    global.ciElectronSettings = {
+      accelerator: false,
+      webPreferences: {
+        nodeIntegration: true,
+        contextIsolation: false
+      }
+    };
+    
+    // 设置特定环境变量
+    process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = 'true';
+    
+    console.log('CI环境特殊配置完成');
+  }
+}
+
+const testEnv = new TestEnvironment();
+testEnv.init();
+
+// 对CI环境进行特殊设置
+if (isCI) {
+  testEnv.setupCIEnvironment();
+  
+  // 在CI环境中模拟一些浏览器功能
+  global.window = global.window || {};
+  global.document = global.document || {
+    createElement: () => ({
+      style: {},
+      addEventListener: () => {},
+      removeEventListener: () => {},
+      appendChild: () => {}
+    })
+  };
+}
+
+module.exports = testEnv; 

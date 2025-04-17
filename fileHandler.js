@@ -53,6 +53,12 @@ export async function processDroppedFile(file) {
   showStatus('Loading file...', 'loading');
   
   try {
+    // Check file size before processing
+    const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100MB limit
+    if (file.size > MAX_FILE_SIZE) {
+      throw new Error(`File too large (${(file.size / (1024 * 1024)).toFixed(2)}MB). Maximum size is ${MAX_FILE_SIZE / (1024 * 1024)}MB.`);
+    }
+    
     // Read the file as text using a Promise
     const fileContent = await readFileAsText(file);
     
@@ -60,6 +66,8 @@ export async function processDroppedFile(file) {
     let data;
     try {
       data = JSON.parse(fileContent);
+      // Clear the fileContent variable to free memory
+      fileContent = null;
     } catch (parseError) {
       throw new Error(`Invalid JSON format: ${parseError.message}`);
     }
@@ -142,16 +150,54 @@ function validateChatFile(data) {
 
 // Load file from path
 export async function loadFile(filePath) {
+  console.log('fileHandler.js: loadFile called with path:', filePath);
   showStatus('Loading file...', 'loading');
   
   try {
+    // First check file size
+    console.log('fileHandler.js: Checking file stats...');
+    const fileStats = await window.api.getFileStats(filePath);
+    console.log('fileHandler.js: File stats:', fileStats);
+    
+    // Check for error in fileStats
+    if (!fileStats) {
+      throw new Error('Could not get file information');
+    }
+    
+    if (fileStats.error) {
+      throw new Error(`Error getting file information: ${fileStats.error}`);
+    }
+    
+    const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100MB limit
+    
+    if (fileStats && fileStats.size > MAX_FILE_SIZE) {
+      throw new Error(`File too large (${(fileStats.size / (1024 * 1024)).toFixed(2)}MB). Maximum size is ${MAX_FILE_SIZE / (1024 * 1024)}MB.`);
+    }
+    
+    console.log('fileHandler.js: Reading file content...');
     const fileData = await window.api.readFile(filePath);
+    console.log('fileHandler.js: File data received, message count:', fileData?.content?.messages?.length);
     
     // 验证数据格式正确后再设置chatData
     if (!fileData || !fileData.content || !fileData.content.messages) {
       throw new Error('Invalid file format: missing messages data');
     }
     
+    // Clear previous data to free memory
+    console.log('fileHandler.js: Clearing previous chat data');
+    state.setChatData(null);
+    
+    // Force garbage collection if available (may not work in all environments)
+    if (window.gc) {
+      try {
+        window.gc();
+      } catch (e) {
+        console.log('Manual GC not available');
+      }
+    }
+    
+    // Set new data after clearing old data
+    console.log('fileHandler.js: Setting new chat data');
     state.setChatData(fileData.content);
     
     // Create a file info object
@@ -159,10 +205,12 @@ export async function loadFile(filePath) {
     const fileInfo = { path: filePath, name, size, messageCount };
     
     // Add to file history
+    console.log('fileHandler.js: Updating file history');
     state.addToFileHistory(fileInfo);
     updateHistoryList();
     
     // Update UI
+    console.log('fileHandler.js: Updating UI');
     updateFileInfo(fileInfo);
     
     showStatus('File loaded successfully', 'success');

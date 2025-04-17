@@ -1,0 +1,171 @@
+{
+  "name": "Mock Telegram Chat",
+  "type": "private_chat",
+  "id": 123456789,
+  "messages": [
+    {
+      "id": 1001,
+      "type": "message",
+      "date": "2023-11-01T10:15:30Z",
+      "from": "User One",
+      "from_id": "user_1",
+      "text": "Hello! This is a test message."
+    },
+    {
+      "id": 1002,
+      "type": "message",
+      "date": "2023-11-01T10:16:45Z",
+      "from": "User Two",
+      "from_id": "user_2",
+      "text": "Hi there! How are you doing today?"
+    },
+    {
+      "id": 1003,
+      "type": "message",
+      "date": "2023-11-01T10:18:20Z",
+      "from": "User One",
+      "from_id": "user_1",
+      "text": "I'm doing great! Just testing this chat export feature."
+    },
+    {
+      "id": 1004,
+      "type": "message",
+      "date": "2023-11-01T10:20:05Z",
+      "from": "User Two",
+      "from_id": "user_2",
+      "text": "That's awesome! Let me share some content with you."
+    },
+    {
+      "id": 1005,
+      "type": "message",
+      "date": "2023-11-01T10:21:15Z",
+      "from": "User Two",
+      "from_id": "user_2",
+      "text": "Here's an image:",
+      "photo": "mock_image.jpg",
+      "width": 800,
+      "height": 600
+    },
+    {
+      "id": 1006,
+      "type": "message",
+      "date": "2023-11-01T10:25:30Z",
+      "from": "User One",
+      "from_id": "user_1",
+      "text": "Nice picture! Let me send you a document.",
+      "file": "document.pdf"
+    },
+    {
+      "id": 1007,
+      "type": "message",
+      "date": "2023-11-01T10:30:45Z",
+      "from": "User Two",
+      "from_id": "user_2",
+      "text": "Thanks for sharing! By the way, have you seen this link? https://example.com"
+    },
+    {
+      "id": 1008,
+      "type": "message",
+      "date": "2023-11-01T10:35:10Z",
+      "from": "User One",
+      "from_id": "user_1",
+      "text": "Yes, that's a great resource. Let me also mention @username and #hashtag"
+    },
+    {
+      "id": 1009,
+      "type": "message",
+      "date": "2023-11-01T10:40:20Z",
+      "from": "User Two",
+      "from_id": "user_2",
+      "text": "Let's try some formatting: *bold*, _italic_, and `code`"
+    },
+    {
+      "id": 1010,
+      "type": "message",
+      "date": "2023-11-01T10:45:35Z",
+      "from": "User One",
+      "from_id": "user_1",
+      "text": "Here's a longer paragraph to test search functionality. This message contains multiple sentences and should be useful for testing various search queries. We can search for specific words, phrases, or use regex patterns to find content."
+    },
+    {
+      "id": 1011,
+      "type": "message",
+      "date": "2023-11-01T10:50:45Z",
+      "from": "User Two",
+      "from_id": "user_2",
+      "text": "Let's add some special characters: !@#$%^&*()_+-={}[]|\\:;\"'<>,.?/~`"
+    },
+    {
+      "id": 1012,
+      "type": "message",
+      "date": "2023-11-01T10:55:20Z",
+      "from": "User One",
+      "from_id": "user_1",
+      "text": "And some emojis: 😀 🎉 👍 🚀 💯"
+    },
+    {
+      "id": 1013,
+      "type": "message",
+      "date": "2023-11-01T11:00:10Z",
+      "from": "User Two",
+      "from_id": "user_2",
+      "text": "Let's also include different languages: English, Español, Français, Deutsch, 中文, 日本語, Русский"
+    },
+    {
+      "id": 1014,
+      "type": "message",
+      "date": "2023-11-01T11:05:30Z",
+      "from": "User One",
+      "from_id": "user_1",
+      "text": "I'm going to send a message with a quoted reply",
+      "reply_to_message_id": 1010
+    },
+    {
+      "id": 1015,
+      "type": "message",
+      "date": "2023-11-01T11:10:45Z",
+      "from": "User Two",
+      "from_id": "user_2",
+      "text": "This is a forwarded message",
+      "forwarded_from": "Another User"
+    },
+    {
+      "id": 1016,
+      "type": "service",
+      "date": "2023-11-01T11:15:20Z",
+      "action": "phone_call",
+      "duration_seconds": 120
+    },
+    {
+      "id": 1017,
+      "type": "service",
+      "date": "2023-11-01T11:20:35Z",
+      "action": "chat_shared",
+      "title": "Another Chat"
+    },
+    {
+      "id": 1018,
+      "type": "message",
+      "date": "2023-11-01T11:25:50Z",
+      "from": "User One",
+      "from_id": "user_1",
+      "text": "Let's have a very specific phrase here: 'testing chat explorer application'"
+    },
+    {
+      "id": 1019,
+      "type": "message",
+      "date": "2023-11-01T11:30:15Z",
+      "from": "User Two",
+      "from_id": "user_2",
+      "text": "This message has multiple testing chat explorer references to ensure we can find it with search"
+    },
+    {
+      "id": 1020,
+      "type": "message",
+      "date": "2023-11-01T11:35:30Z",
+      "from": "User One",
+      "from_id": "user_1",
+      "text": "Final test message with some keywords: history functionality test"
+    }
+  ]
+} 

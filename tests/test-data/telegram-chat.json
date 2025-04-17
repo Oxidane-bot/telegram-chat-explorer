@@ -1,0 +1,14 @@
+{
+  "name": "Test Chat",
+  "type": "personal_chat",
+  "id": 12345,
+  "messages": [
+    {
+      "id": 1,
+      "type": "message",
+      "date": "2023-01-01T12:00:00",
+      "from": "Test User",
+      "text": "Hello world"
+    }
+  ]
+}

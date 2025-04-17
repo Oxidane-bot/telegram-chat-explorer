@@ -26,15 +26,6 @@ function setupEventListeners() {
     }
   });
   
-  // Switch file button click
-  domElements.switchFileBtn.addEventListener('click', () => {
-    // Show the file import area
-    domElements.fileImportArea.style.display = 'block';
-    // Clear previous results
-    domElements.resultsContainer.innerHTML = '';
-    domElements.emptyState.style.display = 'flex';
-  });
-  
   // Search button click with debouncing
   domElements.searchBtn.addEventListener('click', () => {
     // Check if file is loaded
@@ -238,7 +229,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     // 3. 并行加载其它非关键模块
     const [
-      { setupDragAndDrop }, 
+      { setupDragAndDrop, loadFile }, 
       { initThemeControls }
     ] = await Promise.all([
       import('./fileHandler.js'),
@@ -248,6 +239,25 @@ document.addEventListener('DOMContentLoaded', async () => {
     // 4. 设置关键事件监听器
     initThemeControls();
     setupDragAndDrop();
+    
+    // 添加直接的browse按钮事件监听器
+    document.getElementById('browseBtn').addEventListener('click', async () => {
+      console.log('Browse button clicked directly');
+      try {
+        const fileInfo = await window.api.openFileDialog();
+        console.log('File dialog result:', fileInfo);
+        if (fileInfo && fileInfo.path) {
+          await loadFile(fileInfo.path);
+        } else {
+          console.log('No file selected or dialog cancelled');
+        }
+      } catch (error) {
+        console.error('Error in direct browse button handler:', error);
+        utils.showStatus(`Error selecting file: ${error.message}`, 'error');
+      }
+    });
+    
+    // 其他最小必要的事件监听器
     setupMinimalEventListeners(dom, utils);
     
     // 5. 加载完成，移除初始加载器
@@ -274,19 +284,30 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 // 只设置最小必要的事件监听器
 function setupMinimalEventListeners(dom, utils) {
-  // 只添加必要的用户交互事件
-  dom.browseBtn.addEventListener('click', async () => {
-    // 延迟加载文件处理模块
-    const { loadFile } = await import('./fileHandler.js');
-    const fileInfo = await window.api.openFileDialog();
-    if (fileInfo) {
-      loadFile(fileInfo.path);
-    }
-  });
+  // Browser button now handled directly during initialization
+  // No need for additional setup here
+  
+  console.log('Setting up minimal event listeners (browse button already handled)');
 }
 
 // 设置其余事件监听器
 function setupRemainingListeners(dom, utils, state) {
+  // 调试 - 检查DOM元素是否正确加载
+  console.log('Setting up remaining listeners with DOM elements:', {
+    switchFileBtn: dom.switchFileBtn,
+    searchBtn: dom.searchBtn,
+    clearBtn: dom.clearBtn,
+    cardViewBtn: dom.cardViewBtn,
+    listViewBtn: dom.listViewBtn
+  });
+  
+  // 如果switchFileBtn没有找到，尝试重新获取
+  if (!dom.switchFileBtn) {
+    console.warn('Switch file button not found in DOM object, attempting to get it directly');
+    dom.switchFileBtn = document.getElementById('switchFileBtn');
+    console.log('Direct lookup result:', dom.switchFileBtn);
+  }
+  
   // 搜索功能
   dom.searchBtn.addEventListener('click', async () => {
     const { performSearch } = await import('./search.js');
@@ -310,6 +331,31 @@ function setupRemainingListeners(dom, utils, state) {
     dom.resultsStats.textContent = '';
     state.setAllResults([]);
     state.setDisplayedResultsCount(0);
+  });
+  
+  // 添加切换文件按钮事件监听
+  dom.switchFileBtn.addEventListener('click', async () => {
+    console.log('Switch file button clicked');
+    
+    // 清理内存
+    const { cleanup } = await import('./search.js');
+    cleanup();
+    
+    // 清除状态数据以释放内存
+    state.setChatData(null);
+    state.setAllResults([]);
+    state.setDisplayedResultsCount(0);
+    
+    // 清空结果容器
+    dom.resultsContainer.innerHTML = '';
+    
+    // 显示文件导入区域
+    dom.fileImportArea.style.display = 'block';
+    dom.fileInfoBar.style.display = 'none';
+    dom.emptyState.style.display = 'flex';
+    
+    // 记录成功日志用于调试
+    console.log('Switch file option executed successfully');
   });
   
   // 视图切换按钮 - 使用更健壮的实现

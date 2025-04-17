@@ -59,18 +59,42 @@ jobs:
         with:
           name: chat-explorer-${{ matrix.os }}
           path: dist/
-          retention-days: 7 
-          
+          retention-days: 7
+  
+  # 添加单独的发布任务，仅在所有测试和构建完成后运行
+  release:
+    needs: test
+    if: success() && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      
       # 读取 package.json 中的版本号
       - name: Get version
-        if: success() && github.event_name == 'push'
         id: package_version
         run: echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
         shell: bash
+      
+      # 下载所有构建的应用程序
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          
+      # 创建发布目录
+      - name: Prepare release files
+        run: |
+          mkdir -p release-files
+          cp -r artifacts/chat-explorer-macos-latest/* release-files/
+          cp -r artifacts/chat-explorer-windows-latest/* release-files/
         
       # 自动发布到 GitHub Releases
       - name: Create Release
-        if: success() && github.event_name == 'push'
         uses: softprops/action-gh-release@v1
         with:
           name: v${{ steps.package_version.outputs.version }}
@@ -78,6 +102,6 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            dist/**/*
+            release-files/**/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 

@@ -1,6 +1,6 @@
 {
   "name": "chat-explorer",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "An Electron application for searching and browsing chat logs",
   "main": "main.js",
   "scripts": {

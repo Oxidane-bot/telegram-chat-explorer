@@ -10,8 +10,7 @@
     "build:win": "electron-builder --win",
     "test": "cross-env NODE_ENV=test playwright test",
     "test:ui": "cross-env NODE_ENV=test playwright test --ui",
-    "test:core": "cross-env NODE_ENV=test playwright test file-loading-methods.spec.js theme.spec.js",
-    "test:ci": "node tests/ci-setup.js && cross-env NODE_ENV=test CI=true DEBUG=pw:api playwright test --reporter=list"
+    "test:core": "cross-env NODE_ENV=test playwright test file-loading-methods.spec.js theme.spec.js"
   },
   "license": "MIT",
   "repository": {

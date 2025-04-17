@@ -1,31 +1,59 @@
-# 依赖
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Dependency directories
 node_modules/
+jspm_packages/
 
-# 测试结果
-test-results/
-playwright-report/
-
-# 构建产物
+# Build outputs
 dist/
 build/
-*.exe
-*.dmg
-*.app
-*.zip
+out/
 
-# 系统文件
-.DS_Store
-Thumbs.db
+# Testing
+test-results/
+playwright-report/
+/playwright/.cache/
 
-# 个人配置
-.vscode/
-.idea/
-*.log
-*.swp
+# Coverage
+coverage/
+.nyc_output/
 
-# 环境变量
+# Environment
 .env
 .env.local
 .env.development.local
 .env.test.local
-.env.production.local 
+.env.production.local
+
+# Editor directories and files
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Electron specific
+.electron-symbols/
+
+# Package-lock files (uncomment if you want to ignore them)
+# package-lock.json
+# yarn.lock
+
+# Temporary files
+*.tmp
+*.swp
+*.swo 

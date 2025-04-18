@@ -5,9 +5,9 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "build": "electron-builder --mac --win",
-    "build:mac": "electron-builder --mac",
-    "build:win": "electron-builder --win",
+    "build": "electron-builder --mac --win --publish never",
+    "build:mac": "electron-builder --mac --publish never",
+    "build:win": "electron-builder --win --publish never",
     "test": "cross-env NODE_ENV=test playwright test",
     "test:ui": "cross-env NODE_ENV=test playwright test --ui",
     "test:core": "cross-env NODE_ENV=test playwright test file-loading-methods.spec.js theme.spec.js"
@@ -33,7 +33,7 @@
     "appId": "com.chatexplorer.app",
     "productName": "Chat Explorer",
     "icon": "icon.ico",
-    "publish": "never",
+    "publish": false,
     "mac": {
       "category": "public.app-category.utilities",
       "target": [

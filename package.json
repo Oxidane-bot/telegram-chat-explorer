@@ -33,6 +33,7 @@
     "appId": "com.chatexplorer.app",
     "productName": "Chat Explorer",
     "icon": "icon.ico",
+    "publish": "never",
     "mac": {
       "category": "public.app-category.utilities",
       "target": [

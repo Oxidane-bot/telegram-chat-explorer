@@ -49,6 +49,8 @@ jobs:
       # 添加构建步骤 (仅在测试成功且为推送事件时运行)
       - name: Build application
         if: success() && github.event_name == 'push'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           if [ "${{ matrix.os }}" == "macos-latest" ]; then
             npm run build:mac

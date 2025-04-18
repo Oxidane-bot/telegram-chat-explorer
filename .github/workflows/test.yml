@@ -107,14 +107,20 @@ jobs:
       - name: Prepare release files
         run: |
           mkdir -p release-files
-          # 为不同平台的构建文件创建不同的文件名前缀
-          find artifacts/chat-explorer-macos-latest -name "*.dmg" -o -name "*.zip" | xargs -I{} cp {} release-files/mac-{}
-          find artifacts/chat-explorer-macos-latest -name "*.dmg" -o -name "*.zip" | xargs -I{} basename {} | xargs -I{} mv release-files/mac-{} release-files/mac-{}
           
-          find artifacts/chat-explorer-windows-latest -name "*.exe" | xargs -I{} cp {} release-files/win-{}
-          find artifacts/chat-explorer-windows-latest -name "*.exe" | xargs -I{} basename {} | xargs -I{} mv release-files/win-{} release-files/win-{}
+          # For macOS files - copy with proper prefix in one step
+          find artifacts/chat-explorer-macos-latest -name "*.dmg" -o -name "*.zip" | while read filepath; do
+            filename=$(basename "$filepath")
+            cp "$filepath" "release-files/mac-$filename"
+          done
           
-          # 检查和打印要发布的文件列表
+          # For Windows files - copy with proper prefix in one step
+          find artifacts/chat-explorer-windows-latest -name "*.exe" | while read filepath; do
+            filename=$(basename "$filepath")
+            cp "$filepath" "release-files/win-$filename"
+          done
+          
+          # Check and print the list of files to be published
           echo "Files to be published:"
           ls -la release-files/
         

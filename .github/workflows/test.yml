@@ -87,17 +87,36 @@ jobs:
         run: echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
         shell: bash
       
+      # 删除已存在的相同版本Release(如果存在)
+      - name: Delete existing release
+        uses: dev-drprasad/delete-tag-and-release@v0.2.1
+        with:
+          tag_name: v${{ steps.package_version.outputs.version }}
+          delete_release: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
+          
       # 下载所有构建的应用程序
       - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
           path: artifacts
           
-      # 创建发布目录并只复制主要安装包文件
+      # 创建发布目录并只复制主要安装包文件，避免重复文件
       - name: Prepare release files
         run: |
           mkdir -p release-files
-          find artifacts -name "*.dmg" -o -name "*.exe" -o -name "*.zip" | xargs -I{} cp {} release-files/
+          # 为不同平台的构建文件创建不同的文件名前缀
+          find artifacts/chat-explorer-macos-latest -name "*.dmg" -o -name "*.zip" | xargs -I{} cp {} release-files/mac-{}
+          find artifacts/chat-explorer-macos-latest -name "*.dmg" -o -name "*.zip" | xargs -I{} basename {} | xargs -I{} mv release-files/mac-{} release-files/mac-{}
+          
+          find artifacts/chat-explorer-windows-latest -name "*.exe" | xargs -I{} cp {} release-files/win-{}
+          find artifacts/chat-explorer-windows-latest -name "*.exe" | xargs -I{} basename {} | xargs -I{} mv release-files/win-{} release-files/win-{}
+          
+          # 检查和打印要发布的文件列表
+          echo "Files to be published:"
+          ls -la release-files/
         
       # 自动发布到 GitHub Releases，只发布主要安装包文件
       - name: Create Release
@@ -108,6 +127,4 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            release-files/*
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+            release-files/* 

@@ -93,14 +93,13 @@ jobs:
         with:
           path: artifacts
           
-      # 创建发布目录
+      # 创建发布目录并只复制主要安装包文件
       - name: Prepare release files
         run: |
           mkdir -p release-files
-          cp -r artifacts/chat-explorer-macos-latest/* release-files/
-          cp -r artifacts/chat-explorer-windows-latest/* release-files/
+          find artifacts -name "*.dmg" -o -name "*.exe" -o -name "*.zip" | xargs -I{} cp {} release-files/
         
-      # 自动发布到 GitHub Releases
+      # 自动发布到 GitHub Releases，只发布主要安装包文件
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
@@ -109,6 +108,6 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            release-files/**/*
+            release-files/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
